@@ -1,0 +1,102 @@
+/* ============================================================
+   Bottom Navigation Bar Styles
+   ============================================================ */
+
+.bottom-navbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding-bottom: var(--safe-area-bottom);
+}
+
+.nav-glass {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 25, 35, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.nav-tabs {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: var(--navbar-height);
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.nav-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-normal);
+  position: relative;
+  min-width: 56px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nav-tab:active {
+  transform: scale(0.9);
+}
+
+.nav-icon {
+  width: 22px;
+  height: 22px;
+  transition: all var(--transition-normal);
+  color: var(--text-muted);
+}
+
+.nav-label {
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: color var(--transition-normal);
+  letter-spacing: 0.3px;
+}
+
+.nav-indicator {
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  width: 24px;
+  height: 3px;
+  background: var(--gradient-red);
+  border-radius: var(--radius-full);
+  transition: transform var(--transition-slow);
+}
+
+/* Active state */
+.nav-tab.active .nav-icon {
+  color: var(--val-red);
+  filter: drop-shadow(0 0 8px rgba(255, 70, 85, 0.4));
+}
+
+.nav-tab.active .nav-label {
+  color: var(--val-red);
+}
+
+.nav-tab.active .nav-indicator {
+  transform: translateX(-50%) scaleX(1);
+}
+
+/* Live dot */
+.nav-dot-live {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  width: 6px;
+  height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}

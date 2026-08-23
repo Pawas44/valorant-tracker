@@ -1,0 +1,200 @@
+.live-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.page-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 24px;
+  margin: 0;
+}
+
+.live-dot {
+  width: 12px;
+  height: 12px;
+  background-color: #4CAF50;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.pulsing {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+}
+
+.info-banner {
+  background-color: var(--card-bg, #2A2A2A);
+  color: var(--text-secondary, #A0A0A0);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.map-hero {
+  position: relative;
+  height: 160px;
+  border-radius: 12px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.match-score-display {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 48px;
+  font-weight: 700;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.score.blue { color: #42A5F5; }
+.score.red { color: #FF4655; }
+.score-divider { color: white; font-size: 32px; }
+
+.map-name {
+  position: absolute;
+  bottom: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #FFF;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.teams-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.team-header {
+  margin: 0 0 12px 0;
+  font-size: 18px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid;
+}
+
+.blue-team .team-header {
+  color: #42A5F5;
+  border-bottom-color: rgba(66, 165, 245, 0.3);
+}
+
+.red-team .team-header {
+  color: #FF4655;
+  border-bottom-color: rgba(255, 70, 85, 0.3);
+}
+
+.player-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.player-row {
+  display: flex;
+  align-items: center;
+  background-color: var(--card-bg, #2A2A2A);
+  padding: 12px;
+  border-radius: 8px;
+  gap: 12px;
+}
+
+.player-agent img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.player-info {
+  flex: 1;
+}
+
+.player-name {
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.player-tag {
+  color: var(--text-secondary, #A0A0A0);
+  font-size: 12px;
+}
+
+.player-rank {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-secondary, #A0A0A0);
+}
+
+.rank-icon-small {
+  width: 16px;
+  height: 16px;
+}
+
+.rr-text {
+  color: #FFF;
+  font-weight: 500;
+}
+
+.player-stats {
+  text-align: right;
+}
+
+.kda {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.acs {
+  font-size: 12px;
+  color: var(--text-secondary, #A0A0A0);
+}
+
+/* Skeletons */
+.skeleton-map-hero {
+  height: 160px;
+  background-color: var(--card-bg, #2A2A2A);
+  border-radius: 12px;
+  margin-bottom: 16px;
+  animation: skeleton 1.5s infinite;
+}
+
+.skeleton-team {
+  height: 200px;
+  background-color: var(--card-bg, #2A2A2A);
+  border-radius: 12px;
+  margin-bottom: 24px;
+  animation: skeleton 1.5s infinite;
+}
+
+@keyframes skeleton {
+  0% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.5; }
+}
