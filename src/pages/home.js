@@ -1,4 +1,4 @@
-import { getMMR, getMatches, getRankName, getRankColor } from '../api/henrik.js';
+import { getMMR, getMatches, getMMRByPuuid, getMatchesByPuuid, getRankName, getRankColor } from '../api/henrik.js';
 import { getRankIcon, getAgentByUuid, getMapByUrl } from '../api/assets.js';
 import { getState } from '../api/state.js';
 
@@ -77,9 +77,15 @@ async function loadDashboardData() {
   if (!user) return;
 
   try {
+    const usePuuid = user.puuid && !user.puuid.startsWith('test-');
+    
     const [mmrData, matchesData] = await Promise.all([
-      getMMR(user.region, user.name, user.tag).catch(() => null),
-      getMatches(user.region, user.name, user.tag).catch(() => null)
+      usePuuid
+        ? getMMRByPuuid(user.region, user.puuid).catch(() => null)
+        : getMMR(user.region, user.name, user.tag).catch(() => null),
+      usePuuid
+        ? getMatchesByPuuid(user.region, user.puuid).catch(() => null)
+        : getMatches(user.region, user.name, user.tag).catch(() => null)
     ]);
 
     renderRank(mmrData);
@@ -88,8 +94,10 @@ async function loadDashboardData() {
       renderStats(matchesData, user.puuid);
       renderMatches(matchesData.slice(0, 3), user.puuid);
     } else {
-      document.getElementById('stats-container').innerHTML = '<p>No recent matches found.</p>';
-      document.getElementById('matches-container').innerHTML = '<p>No recent matches found.</p>';
+      const statsEl = document.getElementById('stats-container');
+      const matchesEl = document.getElementById('matches-container');
+      if (statsEl) statsEl.innerHTML = '<p class="empty-msg">No recent stats found.</p>';
+      if (matchesEl) matchesEl.innerHTML = '<p class="empty-msg">No recent matches found.</p>';
     }
   } catch (error) {
     console.error('Error loading dashboard:', error);

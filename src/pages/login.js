@@ -1,4 +1,5 @@
 import { getAccount } from '../api/henrik.js';
+import { authenticateWithRiot } from '../api/riot-auth.js';
 import { setState, showToast } from '../api/state.js';
 import { navigate } from '../router.js';
 import { showNavbar } from '../main.js';
@@ -219,45 +220,96 @@ async function handleCredentialsLogin() {
   btn.disabled = true;
 
   try {
-    // Simulate login for testing since it's a web view
-    await new Promise(r => setTimeout(r, 1500));
+    let authData = null;
+    let isRealAuth = false;
 
-    // Retrieve default profile data for this user to populate dashboard
-    // We search the username, if we can't find, we use fallback mock data (Tenz)
-    let account;
     try {
-      account = await getAccount(username, 'Riot');
-    } catch {
-      account = {
-        name: username,
-        tag: 'RIOT',
-        puuid: 'test-puuid-tenz-12345',
-        account_level: 198,
-        card: {
-          wide: 'https://media.valorant-api.com/playercards/9fb34a2e-41de-4ee2-da79-b097b6ec7c61/wideart.png',
-          small: 'https://media.valorant-api.com/playercards/9fb34a2e-41de-4ee2-da79-b097b6ec7c61/smallart.png'
-        }
-      };
+      // Attempt real Riot games authentication (works natively in Capacitor APK)
+      authData = await authenticateWithRiot(username, password, region);
+      isRealAuth = true;
+    } catch (authError) {
+      if (authError.message === 'BROWSER_CORS') {
+        showToast('Browser CORS: Simulating login for testing. Real login requires Mobile APK.', 'info');
+      } else {
+        throw authError; // rethrow real credential failures
+      }
     }
 
-    setState({
-      user: {
-        name: account.name,
-        tag: account.tag,
-        region: region,
-        puuid: account.puuid,
-        accountLevel: account.account_level,
-        card: account.card,
-        authType: 'credentials'
-      },
-      isLoggedIn: true,
-    });
+    let account;
+    if (isRealAuth && authData) {
+      // Fetched real user info
+      // Try to get account details from HenrikDev using real name/tag
+      try {
+        account = await getAccount(authData.gameName, authData.tagLine);
+      } catch {
+        account = {
+          name: authData.gameName,
+          tag: authData.tagLine,
+          puuid: authData.puuid,
+          account_level: 1,
+          card: {
+            wide: 'https://media.valorant-api.com/playercards/9fb34a2e-41de-4ee2-da79-b097b6ec7c61/wideart.png',
+            small: 'https://media.valorant-api.com/playercards/9fb34a2e-41de-4ee2-da79-b097b6ec7c61/smallart.png'
+          }
+        };
+      }
+
+      setState({
+        user: {
+          name: account.name,
+          tag: account.tag,
+          region: region,
+          puuid: authData.puuid,
+          accountLevel: account.account_level,
+          card: account.card,
+          accessToken: authData.accessToken,
+          entitlementsToken: authData.entitlementsToken,
+          authType: 'credentials',
+          isRealAuth: true
+        },
+        isLoggedIn: true,
+      });
+
+      showToast(`Logged in successfully as ${account.name}!`, 'success');
+    } else {
+      // Browser simulated fallback (Tenz)
+      try {
+        account = await getAccount(username, 'Riot');
+      } catch {
+        account = {
+          name: username,
+          tag: 'RIOT',
+          puuid: 'test-puuid-tenz-12345',
+          account_level: 198,
+          card: {
+            wide: 'https://media.valorant-api.com/playercards/9fb34a2e-41de-4ee2-da79-b097b6ec7c61/wideart.png',
+            small: 'https://media.valorant-api.com/playercards/9fb34a2e-41de-4ee2-da79-b097b6ec7c61/smallart.png'
+          }
+        };
+      }
+
+      setState({
+        user: {
+          name: account.name,
+          tag: account.tag,
+          region: region,
+          puuid: account.puuid,
+          accountLevel: account.account_level,
+          card: account.card,
+          authType: 'credentials',
+          isRealAuth: false
+        },
+        isLoggedIn: true,
+      });
+
+      showToast(`Logged in as ${account.name} (Simulated)`, 'success');
+    }
 
     showNavbar();
     navigate('home');
-    showToast(`Logged in successfully! Welcome, ${account.name}`, 'success');
   } catch (error) {
-    showToast('Failed to authenticate. Check credentials.', 'error');
+    console.error("Login failure:", error);
+    showToast(error.message || 'Failed to authenticate. Check credentials.', 'error');
   } finally {
     btn.classList.remove('loading');
     btn.disabled = false;

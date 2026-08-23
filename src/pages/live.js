@@ -1,4 +1,4 @@
-import { getMatches, getMMR, getRankName, getRankColor } from '../api/henrik.js';
+import { getMatches, getMatchesByPuuid, getMMR, getRankName, getRankColor } from '../api/henrik.js';
 import { getAgents, getMapByUrl, getRankIcon } from '../api/assets.js';
 import { getState, showToast } from '../api/state.js';
 
@@ -40,7 +40,10 @@ export async function init() {
   }
 
   try {
-    const matches = await getMatches(state.user.region, state.user.name, state.user.tag, null, 1);
+    const usePuuid = state.user.puuid && !state.user.puuid.startsWith('test-');
+    const matches = usePuuid
+      ? await getMatchesByPuuid(state.user.region, state.user.puuid, null, 1)
+      : await getMatches(state.user.region, state.user.name, state.user.tag, null, 1);
     if (isDestroyed) return;
 
     if (!matches || matches.length === 0) {

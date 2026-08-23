@@ -1,4 +1,4 @@
-import { getMatches, getRankName } from '../api/henrik.js';
+import { getMatches, getMatchesByPuuid, getRankName } from '../api/henrik.js';
 import { getAgents, getMaps } from '../api/assets.js';
 import { getState, showToast } from '../api/state.js';
 
@@ -67,7 +67,10 @@ export async function init() {
     try {
       // Fetch 10 matches
       const filterParam = currentFilter === 'all' ? undefined : currentFilter;
-      const matches = await getMatches(state.user.region, state.user.name, state.user.tag, filterParam, 10);
+      const usePuuid = state.user.puuid && !state.user.puuid.startsWith('test-');
+      const matches = usePuuid
+        ? await getMatchesByPuuid(state.user.region, state.user.puuid, filterParam, 10)
+        : await getMatches(state.user.region, state.user.name, state.user.tag, filterParam, 10);
       
       if (isDestroyed) return;
       allMatches = matches || [];

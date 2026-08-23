@@ -9,7 +9,7 @@
   min-height: 100vh;
   position: relative;
   overflow: hidden;
-  background-image: url('https://prod.static.assets.riotgames.com/auth-bootstrap/v2/assets/backgrounds/riot_games_brand.jpg');
+  background-image: url('/bg.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

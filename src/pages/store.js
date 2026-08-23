@@ -1,4 +1,5 @@
 import { getWeaponSkins, getContentTiers, getBundles, SKIN_TIER_COLORS } from '../api/assets.js';
+import { getRealStorefront } from '../api/riot-auth.js';
 import { getState, showToast } from '../api/state.js';
 
 let countdownInterval = null;
@@ -82,15 +83,11 @@ function getSkinPrice(tierUuid, tiers) {
 
 export async function init() {
   const countdownEl = document.getElementById('store-countdown');
+  const state = getState();
+  const user = state.user;
   
-  const updateCountdown = () => {
-    if (countdownEl) {
-      countdownEl.textContent = getTimeUntilReset();
-    }
-  };
-  
-  updateCountdown();
-  countdownInterval = setInterval(updateCountdown, 1000);
+  let useRealStore = false;
+  let storefront = null;
 
   try {
     const [skins, tiers, bundles] = await Promise.all([
@@ -99,44 +96,89 @@ export async function init() {
       getBundles()
     ]);
 
-    const dailyOffers = getDailyStore(skins);
-    const offersContainer = document.getElementById('daily-offers');
-    
-    offersContainer.innerHTML = dailyOffers.map(skin => {
-      const tier = tiers.find(t => t.uuid === skin.contentTierUuid);
-      const price = getSkinPrice(skin.contentTierUuid, tiers);
-      const tierColorObj = tier ? SKIN_TIER_COLORS[tier.devName] : null;
-      const tierColor = tierColorObj ? tierColorObj.color : '#aaa';
-      
-      // Extract weapon type (basic logic)
-      const weaponType = skin.weaponName || 'Weapon';
+    if (user && user.isRealAuth && user.accessToken && user.entitlementsToken) {
+      // Attempt to load real storefront from Riot CDN
+      storefront = await getRealStorefront(user.puuid, user.accessToken, user.entitlementsToken, user.region).catch(() => null);
+      if (storefront) {
+        useRealStore = true;
+      }
+    }
 
-      return `
-        <div class="skin-card">
-          <div class="skin-image-container">
-            <img src="${skin.displayIcon}" alt="${skin.displayName}" class="skin-image" />
-          </div>
-          <div class="skin-details">
-            <div class="skin-name-row">
-              <span class="skin-name">${skin.displayName}</span>
-              <span class="weapon-type">${weaponType}</span>
+    // Configure Countdown Timer
+    if (useRealStore && storefront) {
+      let secondsLeft = storefront.SkinsPanelLayout?.SingleItemOffersRemainingDurationInSeconds || 86400;
+      const updateRealCountdown = () => {
+        if (countdownEl) {
+          if (secondsLeft <= 0) {
+            countdownEl.textContent = '00:00:00';
+            return;
+          }
+          const h = String(Math.floor(secondsLeft / 3600)).padStart(2, '0');
+          const m = String(Math.floor((secondsLeft % 3600) / 60)).padStart(2, '0');
+          const s = String(secondsLeft % 60).padStart(2, '0');
+          countdownEl.textContent = `${h}:${m}:${s}`;
+          secondsLeft--;
+        }
+      };
+      updateRealCountdown();
+      countdownInterval = setInterval(updateRealCountdown, 1000);
+    } else {
+      const updateCountdown = () => {
+        if (countdownEl) {
+          countdownEl.textContent = getTimeUntilReset();
+        }
+      };
+      updateCountdown();
+      countdownInterval = setInterval(updateCountdown, 1000);
+    }
+
+    let dailyOffers = [];
+    if (useRealStore && storefront) {
+      const offerUuids = storefront.SkinsPanelLayout?.SingleItemOffers || [];
+      dailyOffers = offerUuids.map(uuid => {
+        // Find skin that matches this level or base skin uuid
+        return skins.find(s => s.uuid === uuid || s.levels?.some(l => l.uuid === uuid) || s.chromas?.some(c => c.uuid === uuid));
+      }).filter(Boolean);
+    } else {
+      dailyOffers = getDailyStore(skins);
+    }
+
+    const offersContainer = document.getElementById('daily-offers');
+    if (offersContainer) {
+      offersContainer.innerHTML = dailyOffers.map(skin => {
+        const tier = tiers.find(t => t.uuid === skin.contentTierUuid);
+        const price = getSkinPrice(skin.contentTierUuid, tiers);
+        const tierColorObj = tier ? SKIN_TIER_COLORS[tier.devName] : null;
+        const tierColor = tierColorObj ? tierColorObj.color : '#aaa';
+        const weaponType = skin.weaponName || 'Weapon';
+
+        return `
+          <div class="skin-card">
+            <div class="skin-image-container">
+              <img src="${skin.displayIcon}" alt="${skin.displayName}" class="skin-image" />
             </div>
-            <div class="skin-price-row">
-              <div class="skin-price">
-                <div class="vp-icon-small">V</div>
-                <span>${price}</span>
+            <div class="skin-details">
+              <div class="skin-name-row">
+                <span class="skin-name">${skin.displayName}</span>
+                <span class="weapon-type">${weaponType}</span>
               </div>
-              ${tier ? `<div class="tier-badge" style="border-color: ${tierColor};">
-                <div class="tier-dot" style="background-color: ${tierColor};"></div>
-              </div>` : ''}
+              <div class="skin-price-row">
+                <div class="skin-price">
+                  <div class="vp-icon-small">V</div>
+                  <span>${price}</span>
+                </div>
+                ${tier ? `<div class="tier-badge" style="border-color: ${tierColor};">
+                  <div class="tier-dot" style="background-color: ${tierColor};"></div>
+                </div>` : ''}
+              </div>
             </div>
           </div>
-        </div>
-      `;
-    }).join('');
+        `;
+      }).join('');
+    }
 
     const bundleContainer = document.getElementById('featured-bundle');
-    if (bundles && bundles.length > 0) {
+    if (bundles && bundles.length > 0 && bundleContainer) {
       const featuredBundle = bundles.find(b => b.displayIcon2) || bundles[0];
       if (featuredBundle) {
         bundleContainer.innerHTML = `

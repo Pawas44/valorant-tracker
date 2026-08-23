@@ -3,6 +3,9 @@ Write-Host "    PUSH VALORANT TRACKER TO GITHUB       " -ForegroundColor Cyan
 Write-Host "==========================================" -ForegroundColor Cyan
 Write-Host ""
 
+# Navigate to the project directory first to ensure git commands run inside the repo
+Set-Location "C:\Users\Administrator\Desktop\ValorantTracker"
+
 $repoUrl = Read-Host "Paste your GitHub Repository URL (e.g., https://github.com/username/repo-name.git)"
 
 if (-not $repoUrl) {
