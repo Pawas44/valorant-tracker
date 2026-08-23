@@ -5,20 +5,20 @@ import { showNavbar } from '../main.js';
 
 export function render() {
   return `
-    <div class="page-full riot-login-page">
-      <div class="riot-bg-pattern"></div>
-      
+    <div class="page-full riot-auth-page">
+      <!-- Riot Games Top Left Logo -->
+      <div class="riot-page-logo">
+        <svg viewBox="0 0 230 60" class="riot-logo-svg">
+          <path fill="#ffffff" d="M12.4 35.8c-.8 0-1.5.3-2.1.8l-8 7.2c-1.1 1-1.3 2.7-.3 3.8l1.6 1.8c.9 1 2.5 1.2 3.6.4l5.3-3.8v29.6c0 1.5 1.2 2.7 2.7 2.7h13.3c1.5 0 2.7-1.2 2.7-2.7V42.1l4.8 3.5c1.1.8 2.7.6 3.6-.4l1.6-1.8c1-1.1.8-2.8-.3-3.8l-8-7.2c-.6-.5-1.3-.8-2.1-.8H12.4zm44.2 0c-.8 0-1.5.3-2.1.8l-8 7.2c-1.1 1-1.3 2.7-.3 3.8l1.6 1.8c.9 1 2.5 1.2 3.6.4l5.3-3.8v29.6c0 1.5 1.2 2.7 2.7 2.7h13.3c1.5 0 2.7-1.2 2.7-2.7V42.1l4.8 3.5c1.1.8 2.7.6 3.6-.4l1.6-1.8c1-1.1.8-2.8-.3-3.8l-8-7.2c-.6-.5-1.3-.8-2.1-.8H56.6zm23 15.6c-.8 0-1.5.3-2.1.8l-8 7.2c-1.1 1-1.3 2.7-.3 3.8l1.6 1.8c.9 1 2.5 1.2 3.6.4l5.3-3.8v13.8c0 1.5 1.2 2.7 2.7 2.7H96c1.5 0 2.7-1.2 2.7-2.7V57.9l4.8 3.5c1.1.8 2.7.6 3.6-.4l1.6-1.8c1-1.1.8-2.8-.3-3.8l-8-7.2c-.6-.5-1.3-.8-2.1-.8H79.6z"/>
+          <!-- Riot Games Text Logo -->
+          <text x="120" y="52" fill="#ffffff" font-family="'Rajdhani', sans-serif" font-weight="900" font-size="28" letter-spacing="2">RIOT GAMES</text>
+        </svg>
+      </div>
+
       <div class="riot-login-card">
-        <!-- Riot Red Fist Logo -->
-        <div class="riot-logo-container">
-          <svg viewBox="0 0 100 100" class="riot-fist-logo">
-            <path fill="currentColor" d="M12.4 35.8c-.8 0-1.5.3-2.1.8l-8 7.2c-1.1 1-1.3 2.7-.3 3.8l1.6 1.8c.9 1 2.5 1.2 3.6.4l5.3-3.8v29.6c0 1.5 1.2 2.7 2.7 2.7h13.3c1.5 0 2.7-1.2 2.7-2.7V42.1l4.8 3.5c1.1.8 2.7.6 3.6-.4l1.6-1.8c1-1.1.8-2.8-.3-3.8l-8-7.2c-.6-.5-1.3-.8-2.1-.8H12.4zm44.2 0c-.8 0-1.5.3-2.1.8l-8 7.2c-1.1 1-1.3 2.7-.3 3.8l1.6 1.8c.9 1 2.5 1.2 3.6.4l5.3-3.8v29.6c0 1.5 1.2 2.7 2.7 2.7h13.3c1.5 0 2.7-1.2 2.7-2.7V42.1l4.8 3.5c1.1.8 2.7.6 3.6-.4l1.6-1.8c1-1.1.8-2.8-.3-3.8l-8-7.2c-.6-.5-1.3-.8-2.1-.8H56.6zm23 15.6c-.8 0-1.5.3-2.1.8l-8 7.2c-1.1 1-1.3 2.7-.3 3.8l1.6 1.8c.9 1 2.5 1.2 3.6.4l5.3-3.8v13.8c0 1.5 1.2 2.7 2.7 2.7H96c1.5 0 2.7-1.2 2.7-2.7V57.9l4.8 3.5c1.1.8 2.7.6 3.6-.4l1.6-1.8c1-1.1.8-2.8-.3-3.8l-8-7.2c-.6-.5-1.3-.8-2.1-.8H79.6z"/>
-          </svg>
-        </div>
-        
         <h2 class="riot-title">Sign in</h2>
         
-        <!-- Tab Selectors -->
+        <!-- Tab Selectors to switch between real login and public stats tracker -->
         <div class="login-tabs">
           <button class="login-tab active" data-tab="credentials">Riot Account</button>
           <button class="login-tab" data-tab="riotid">Riot ID (Public)</button>
@@ -47,6 +47,25 @@ export function render() {
             </select>
             <label for="riot-region">REGION</label>
           </div>
+
+          <!-- Social Buttons Row exactly like original -->
+          <div class="social-login-row">
+            <button type="button" class="social-btn facebook-btn" id="social-fb" title="Facebook">
+              <svg viewBox="0 0 24 24" fill="currentColor" class="social-icon"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
+            </button>
+            <button type="button" class="social-btn google-btn" id="social-google" title="Google">
+              <svg viewBox="0 0 24 24" fill="currentColor" class="social-icon"><path d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.114-5.136 4.114-3.535 0-6.403-2.868-6.403-6.403s2.868-6.403 6.403-6.403c1.582 0 3.024.574 4.14 1.522l3.075-3.075C19.167 2.227 15.93 1 12.24 1 5.48 1 0 6.48 0 13.24s5.48 12.24 12.24 12.24c6.76 0 12.24-5.48 12.24-12.24 0-.79-.08-1.57-.24-2.32H12.24z"/></svg>
+            </button>
+            <button type="button" class="social-btn apple-btn" id="social-apple" title="Apple">
+              <svg viewBox="0 0 24 24" fill="currentColor" class="social-icon"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 4.17c.66-.81 1.11-1.93.99-3.06-1 .04-2.22.67-2.94 1.51-.64.73-1.2 1.87-1.05 2.98 1.12.09 2.26-.57 3-.143z"/></svg>
+            </button>
+            <button type="button" class="social-btn xbox-btn" id="social-xbox" title="Xbox">
+              <svg viewBox="0 0 24 24" fill="currentColor" class="social-icon"><path d="M11.62 0C5.176 0 0 5.177 0 11.622c0 6.446 5.176 11.622 11.62 11.622 6.445 0 11.62-5.176 11.62-11.622C23.24 5.177 18.065 0 11.62 0zm-1.842 4.135c1.474-.897 3.398-.923 4.904-.064 1.346.77 2.051 2.372 1.63 3.73-.205.68-.692 1.295-1.128 1.834-.693.858-1.564 1.589-2.502 2.193-.974-.693-1.91-1.462-2.617-2.399-.449-.602-.91-1.256-1.012-1.986-.18-.73-.013-1.577.41-2.203.22-.32.55-.654.915-1.105zm3.834 14.654c-1.397.666-3.115.538-4.385-.295-.615-.423-1.09-.948-1.487-1.538-1.064-1.564-1.526-3.487-1.744-5.359.743.68 1.55 1.308 2.45 1.82 1.55.885 3.32 1.385 5.166 1.385 1.846 0 3.615-.5 5.166-1.384.9-.513 1.707-1.14 2.45-1.821-.218 1.872-.68 3.795-1.744 5.36-.397.59-.872 1.115-1.487 1.538-1.27.833-2.988.96-4.385.295z"/></svg>
+            </button>
+            <button type="button" class="social-btn psn-btn" id="social-psn" title="PlayStation">
+              <svg viewBox="0 0 24 24" fill="currentColor" class="social-icon"><path d="M23.669 16.745c-.477-.736-1.535-1.343-3.14-1.815-1.606-.473-3.693-.787-6.26-.938V12.75c3.04.148 5.766.495 8.169 1.04 1.36.31 2.378.719 3.056 1.23.678.51 1.018 1.157 1.018 1.94 0 .907-.468 1.636-1.402 2.186-.933.551-2.274.965-4.02 1.242-1.747.277-3.835.438-6.262.482v-2.09c1.947-.073 3.649-.221 5.105-.445 1.455-.223 2.502-.516 3.14-.88.636-.363.955-.785.955-1.264s-.32-.897-.959-1.246zm-12.782.9c0 .484.341.91.1.22-.387-.698-1.528-1.306-3.424-1.823-1.895-.518-4.484-.863-7.766-1.037V11.75c3.708.148 6.953.513 9.734 1.096 1.61.336 2.825.776 3.645 1.32.82.544 1.23 1.233 1.23 2.068 0 .97-.565 1.748-1.696 2.336-1.13.587-2.753 1.028-4.869 1.322-2.115.294-4.636.467-7.564.516v-2.247c2.355-.078 4.41-.237 6.17-.478 1.76-.24 3.024-.555 3.792-.947.77-.39 1.148-.844 1.148-1.362z"/></svg>
+            </button>
+          </div>
           
           <div class="form-checkbox-row">
             <label class="checkbox-container">
@@ -58,7 +77,7 @@ export function render() {
           
           <div class="login-action-container">
             <button type="submit" id="credentials-btn" class="riot-next-btn">
-              <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="#999999" stroke-width="3">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
                 <polyline points="12 5 19 12 12 19"></polyline>
               </svg>
@@ -87,7 +106,7 @@ export function render() {
           
           <div class="login-action-container">
             <button type="submit" id="riotid-btn" class="riot-next-btn">
-              <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="#999999" stroke-width="3">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
                 <polyline points="12 5 19 12 12 19"></polyline>
               </svg>
@@ -98,6 +117,19 @@ export function render() {
         <div class="riot-footer-links">
           <a href="https://recovery.riotgames.com" target="_blank">CAN'T SIGN IN?</a>
           <a href="https://signup.riotgames.com" target="_blank">CREATE ACCOUNT</a>
+        </div>
+      </div>
+
+      <!-- Riot Games Page Footer -->
+      <div class="riot-page-footer">
+        <div class="footer-links">
+          <a href="https://support.riotgames.com" target="_blank">SUPPORT</a>
+          <a href="https://www.riotgames.com/en/privacy-notice" target="_blank">PRIVACY NOTICE</a>
+          <a href="https://www.riotgames.com/en/terms-of-service" target="_blank">TERMS OF SERVICE</a>
+          <a href="#" id="cookie-preferences">COOKIE PREFERENCES</a>
+        </div>
+        <div class="recaptcha-notice">
+          THIS SITE IS PROTECTED BY HCAPTCHA AND ITS <a href="https://www.hcaptcha.com/privacy" target="_blank">PRIVACY POLICY</a> AND <a href="https://www.hcaptcha.com/terms" target="_blank">TERMS OF SERVICE</a> APPLY.
         </div>
       </div>
     </div>
@@ -120,6 +152,14 @@ export function init() {
     });
   });
 
+  // Highlight social clicks
+  const socialBtns = document.querySelectorAll('.social-btn');
+  socialBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      showToast(`${btn.title} authentication is simulated. Please use username & password below.`, 'info');
+    });
+  });
+
   // Handle Tab 1 submit (Username & Password credentials)
   const credentialsForm = document.getElementById('login-form-credentials');
   const handleCredentialsSubmit = async (e) => {
@@ -136,9 +176,30 @@ export function init() {
   };
   riotidForm.addEventListener('submit', handleRiotidSubmit);
 
+  // Simple input validation to highlight next arrow when inputs are filled
+  const checkInputs = () => {
+    const usernameVal = document.getElementById('riot-username').value;
+    const passwordVal = document.getElementById('riot-password').value;
+    const nextBtn = document.getElementById('credentials-btn');
+    if (usernameVal && passwordVal) {
+      nextBtn.classList.add('active');
+      nextBtn.querySelector('.arrow-icon').setAttribute('stroke', '#111111');
+    } else {
+      nextBtn.classList.remove('active');
+      nextBtn.querySelector('.arrow-icon').setAttribute('stroke', '#999999');
+    }
+  };
+
+  const usernameInput = document.getElementById('riot-username');
+  const passwordInput = document.getElementById('riot-password');
+  usernameInput.addEventListener('input', checkInputs);
+  passwordInput.addEventListener('input', checkInputs);
+
   return () => {
     credentialsForm.removeEventListener('submit', handleCredentialsSubmit);
     riotidForm.removeEventListener('submit', handleRiotidSubmit);
+    usernameInput.removeEventListener('input', checkInputs);
+    passwordInput.removeEventListener('input', checkInputs);
   };
 }
 
@@ -158,33 +219,20 @@ async function handleCredentialsLogin() {
   btn.disabled = true;
 
   try {
-    // In a browser, Riot Auth API blocks due to CORS.
-    // If we detect Capacitor/Native App, we bypass CORS and authenticate.
-    // In browser environment, we simulate successful auth for testing and warn user.
-    const isCapacitor = window.Capacitor !== undefined;
-    
-    if (isCapacitor) {
-      showToast('Authenticating with Riot Games...', 'info');
-      // Execute Capacitor Native HTTP request to authenticate
-      // For testing, since we don't have plugins compiled yet, we fallback.
-    }
-
     // Simulate login for testing since it's a web view
     await new Promise(r => setTimeout(r, 1500));
 
     // Retrieve default profile data for this user to populate dashboard
-    // We search the username, if we can't find, we use fallback mock data
+    // We search the username, if we can't find, we use fallback mock data (Tenz)
     let account;
     try {
-      // Trying to fetch player public stats if username matches format
       account = await getAccount(username, 'Riot');
     } catch {
-      // Mock data for test purposes (Tenz)
       account = {
         name: username,
         tag: 'RIOT',
         puuid: 'test-puuid-tenz-12345',
-        account_level: 245,
+        account_level: 198,
         card: {
           wide: 'https://media.valorant-api.com/playercards/9fb34a2e-41de-4ee2-da79-b097b6ec7c61/wideart.png',
           small: 'https://media.valorant-api.com/playercards/9fb34a2e-41de-4ee2-da79-b097b6ec7c61/smallart.png'
@@ -207,7 +255,7 @@ async function handleCredentialsLogin() {
 
     showNavbar();
     navigate('home');
-    showToast(`Logged in as ${account.name}!`, 'success');
+    showToast(`Logged in successfully! Welcome, ${account.name}`, 'success');
   } catch (error) {
     showToast('Failed to authenticate. Check credentials.', 'error');
   } finally {
