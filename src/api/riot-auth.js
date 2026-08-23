@@ -50,9 +50,39 @@ async function request(options) {
 export async function authenticateWithRiot(username, password, region) {
   // Check if we are in browser. Because of CORS and Cookie security, Riot's auth 
   // requires cookies which cannot be shared across domains in a browser environment.
+  // In the browser, we route the request through our Vercel Serverless Function proxy!
   if (!isCapacitor()) {
-    console.warn("Riot Auth: Browser environment detected. Real credentials flow will fall back to simulated profile.");
-    throw new Error("BROWSER_CORS");
+    try {
+      const response = await fetch('/api/auth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password })
+      });
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(errData.error || 'Invalid credentials. Check your username and password.');
+      }
+
+      const authData = await response.json();
+      return {
+        accessToken: authData.accessToken,
+        entitlementsToken: authData.entitlementsToken,
+        puuid: authData.puuid,
+        gameName: authData.gameName,
+        tagLine: authData.tagLine,
+        region
+      };
+    } catch (err) {
+      if (err.message.includes('Failed to fetch') || err.message === 'Load failed') {
+        // If testing on localhost:3000 where serverless /api isn't running,
+        // fall back to mock data
+        throw new Error('BROWSER_CORS');
+      }
+      throw err;
+    }
   }
 
   try {
@@ -167,7 +197,24 @@ export async function authenticateWithRiot(username, password, region) {
 // ---- Retrieve Real Player Store Front (Daily Gun Skins) ----
 export async function getRealStorefront(puuid, accessToken, entitlementsToken, region) {
   if (!isCapacitor()) {
-    throw new Error('Capacitor native environment required for direct storefront access');
+    // Web browser fallback: call Vercel Serverless Function proxy
+    try {
+      const response = await fetch('/api/store', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ puuid, accessToken, entitlementsToken, region })
+      });
+      
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(errData.error || 'Failed to fetch storefront');
+      }
+      return await response.json();
+    } catch (err) {
+      throw err;
+    }
   }
 
   try {
