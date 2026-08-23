@@ -19,13 +19,7 @@ export function render() {
       <div class="riot-login-card">
         <h2 class="riot-title">Sign in</h2>
         
-        <!-- Tab Selectors to switch between real login and public stats tracker -->
-        <div class="login-tabs">
-          <button class="login-tab active" data-tab="credentials">Riot Account</button>
-          <button class="login-tab" data-tab="riotid">Riot ID (Public)</button>
-        </div>
-        
-        <!-- Tab 1: Real credentials (for APK/Store checking) -->
+        <!-- Tab 1: Real credentials (default view matching official 1:1) -->
         <form id="login-form-credentials" class="login-form active">
           <div class="input-floating-group">
             <input type="text" id="riot-username" required placeholder=" " />
@@ -86,7 +80,7 @@ export function render() {
           </div>
         </form>
 
-        <!-- Tab 2: Public Riot ID Name#Tag -->
+        <!-- Tab 2: Public Riot ID Name#Tag (hidden toggle view) -->
         <form id="login-form-riotid" class="login-form">
           <div class="input-floating-group">
             <input type="text" id="riot-id" required placeholder=" " />
@@ -106,8 +100,8 @@ export function render() {
           </div>
           
           <div class="login-action-container">
-            <button type="submit" id="riotid-btn" class="riot-next-btn">
-              <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="#999999" stroke-width="3">
+            <button type="submit" id="riotid-btn" class="riot-next-btn active">
+              <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="3">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
                 <polyline points="12 5 19 12 12 19"></polyline>
               </svg>
@@ -116,6 +110,7 @@ export function render() {
         </form>
         
         <div class="riot-footer-links">
+          <a href="#" id="toggle-auth-mode">SIGN IN WITH PUBLIC RIOT ID</a>
           <a href="https://recovery.riotgames.com" target="_blank">CAN'T SIGN IN?</a>
           <a href="https://signup.riotgames.com" target="_blank">CREATE ACCOUNT</a>
         </div>
@@ -138,19 +133,29 @@ export function render() {
 }
 
 export function init() {
-  const tabs = document.querySelectorAll('.login-tab');
-  const forms = document.querySelectorAll('.login-form');
+  const credentialsForm = document.getElementById('login-form-credentials');
+  const riotidForm = document.getElementById('login-form-riotid');
+  const modeToggle = document.getElementById('toggle-auth-mode');
+  const titleEl = document.querySelector('.riot-title');
   
-  // Tab Switch logic
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
-      forms.forEach(f => f.classList.remove('active'));
-      
-      tab.classList.add('active');
-      const tabId = tab.dataset.tab;
-      document.getElementById(`login-form-${tabId}`).classList.add('active');
-    });
+  let isRiotIdMode = false;
+
+  // Toggle mode logic (hides tabs and switches cleanly)
+  modeToggle.addEventListener('click', (e) => {
+    e.preventDefault();
+    isRiotIdMode = !isRiotIdMode;
+
+    if (isRiotIdMode) {
+      credentialsForm.classList.remove('active');
+      riotidForm.classList.add('active');
+      titleEl.textContent = 'Sign in with Riot ID';
+      modeToggle.textContent = 'SIGN IN WITH RIOT ACCOUNT';
+    } else {
+      riotidForm.classList.remove('active');
+      credentialsForm.classList.add('active');
+      titleEl.textContent = 'Sign in';
+      modeToggle.textContent = 'SIGN IN WITH PUBLIC RIOT ID';
+    }
   });
 
   // Highlight social clicks
@@ -162,7 +167,6 @@ export function init() {
   });
 
   // Handle Tab 1 submit (Username & Password credentials)
-  const credentialsForm = document.getElementById('login-form-credentials');
   const handleCredentialsSubmit = async (e) => {
     e.preventDefault();
     await handleCredentialsLogin();
@@ -170,7 +174,6 @@ export function init() {
   credentialsForm.addEventListener('submit', handleCredentialsSubmit);
 
   // Handle Tab 2 submit (Public Riot ID Name#Tag)
-  const riotidForm = document.getElementById('login-form-riotid');
   const handleRiotidSubmit = async (e) => {
     e.preventDefault();
     await handleRiotidLogin();
@@ -224,12 +227,12 @@ async function handleCredentialsLogin() {
     let isRealAuth = false;
 
     try {
-      // Attempt real Riot games authentication (works natively in Capacitor APK)
+      // Attempt real Riot games authentication (works natively in Capacitor APK or via Vercel serverless proxy)
       authData = await authenticateWithRiot(username, password, region);
       isRealAuth = true;
     } catch (authError) {
       if (authError.message === 'BROWSER_CORS') {
-        showToast('Browser CORS: Simulating login for testing. Real login requires Mobile APK.', 'info');
+        showToast('Browser CORS: Simulating login for local testing. Deploy to Vercel/APK for real auth.', 'info');
       } else {
         throw authError; // rethrow real credential failures
       }
@@ -348,7 +351,8 @@ async function handleRiotidLogin() {
         puuid: account.puuid,
         accountLevel: account.account_level,
         card: account.card,
-        authType: 'riotid'
+        authType: 'riotid',
+        isRealAuth: false
       },
       isLoggedIn: true,
     });
