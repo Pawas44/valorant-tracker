@@ -1,161 +1,326 @@
-.login-page {
+/* ============================================================
+   Riot Games Sign-In Screen Styles (Official Layout)
+   ============================================================ */
+
+.riot-login-page {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
   position: relative;
   overflow: hidden;
-  background-color: var(--bg-primary, #0f1923);
+  background-color: #111111;
+  font-family: 'Inter', sans-serif;
 }
 
-.login-bg-animation {
+/* Background animation */
+.riot-bg-pattern {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  inset: 0;
   z-index: 0;
-  background-image: linear-gradient(rgba(15, 25, 35, 0.8), rgba(15, 25, 35, 0.9)), 
-                    repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,70,85,0.03) 10px, rgba(255,70,85,0.03) 20px);
+  background: radial-gradient(circle at center, #1b1b1b 0%, #111111 100%);
 }
 
-.login-bg-animation::before, .login-bg-animation::after {
+.riot-bg-pattern::before {
   content: '';
   position: absolute;
-  width: 200%;
-  height: 200%;
-  top: -50%;
-  left: -50%;
-  background: repeating-linear-gradient(90deg, transparent, transparent 100px, rgba(255,255,255,0.02) 100px, rgba(255,255,255,0.02) 101px);
-  transform: rotate(45deg);
-  animation: bg-move 60s linear infinite;
+  inset: 0;
+  opacity: 0.03;
+  background-image: repeating-linear-gradient(45deg, #000 0px, #000 2px, transparent 2px, transparent 10px);
 }
 
-@keyframes bg-move {
-  0% { transform: translateY(0) rotate(45deg); }
-  100% { transform: translateY(-50%) rotate(45deg); }
-}
-
-.login-container {
+/* Riot Sign-in Card */
+.riot-login-card {
   position: relative;
   z-index: 1;
-  width: 90%;
-  max-width: 400px;
-  padding: 2rem;
-  border-radius: 12px;
-  background: var(--glass-bg, rgba(31, 35, 38, 0.7));
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  max-width: 440px;
+  background: #ffffff;
+  padding: 50px 48px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
+  color: #111111;
+  min-height: 580px;
 }
 
-.login-logo {
-  width: 80px;
-  height: 80px;
-  margin-bottom: 1rem;
-  color: var(--val-red, #ff4655);
-  filter: drop-shadow(0 0 10px rgba(255, 70, 85, 0.5));
-  animation: pulse-glow 2s infinite alternate;
+@media (max-width: 480px) {
+  .riot-login-card {
+    height: 100vh;
+    max-width: 100%;
+    padding: 40px 24px;
+    box-shadow: none;
+  }
 }
 
-@keyframes pulse-glow {
-  0% { filter: drop-shadow(0 0 5px rgba(255, 70, 85, 0.3)); }
-  100% { filter: drop-shadow(0 0 15px rgba(255, 70, 85, 0.8)); }
-}
-
-.login-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 2rem;
-  letter-spacing: 2px;
-  color: var(--text-primary, #ece8e1);
-}
-
-.login-container form {
-  width: 100%;
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-  width: 100%;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-size: 0.875rem;
-  color: var(--text-secondary, #8b978f);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.form-group input, .form-group select {
-  width: 100%;
-  padding: 0.75rem;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  color: var(--text-primary, #ece8e1);
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  outline: none;
-}
-
-.form-group input:focus, .form-group select:focus {
-  border-color: var(--val-red, #ff4655);
-  background: rgba(0, 0, 0, 0.5);
-  box-shadow: 0 0 0 2px rgba(255, 70, 85, 0.2);
-}
-
-.hint-text {
-  display: block;
-  margin-top: 0.25rem;
-  font-size: 0.75rem;
-  color: var(--text-secondary, #8b978f);
-}
-
-.btn-full {
-  width: 100%;
-  padding: 1rem;
-  font-size: 1rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  border-radius: 4px;
-  border: none;
-  cursor: pointer;
-  background-color: var(--val-red, #ff4655);
-  color: #fff;
-  transition: background-color 0.3s, transform 0.1s;
+/* Riot Logo */
+.riot-logo-container {
   display: flex;
   justify-content: center;
+  margin-bottom: 30px;
+  color: #ff4655; /* Riot Red */
+}
+
+.riot-fist-logo {
+  width: 110px;
+  height: auto;
+  filter: drop-shadow(0 2px 4px rgba(255, 70, 85, 0.2));
+}
+
+/* Title */
+.riot-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 25px;
+  color: #111111;
+  letter-spacing: -0.5px;
+}
+
+/* Login Tabs */
+.login-tabs {
+  display: flex;
+  border-bottom: 2px solid #ededed;
+  margin-bottom: 30px;
+}
+
+.login-tab {
+  flex: 1;
+  text-align: center;
+  padding: 10px 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #999999;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.login-tab.active {
+  color: #111111;
+  border-bottom-color: #ff4655;
+}
+
+/* Forms */
+.login-form {
+  display: none;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+.login-form.active {
+  display: flex;
+}
+
+/* Floating Label Input Group */
+.input-floating-group {
+  position: relative;
+  width: 100%;
+  background-color: #ededed;
+  border-radius: 4px;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.input-floating-group:hover {
+  background-color: #e2e2e2;
+}
+
+.input-floating-group:focus-within {
+  background-color: #ffffff;
+  border-color: #111111;
+}
+
+.input-floating-group input, .input-floating-group select {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 22px 16px 8px 16px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #111111;
+}
+
+.input-floating-group label {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #999999;
+  pointer-events: none;
+  transition: all 0.15s ease;
+  letter-spacing: 0.5px;
+}
+
+/* Floating behavior when typing or focused */
+.input-floating-group input:focus ~ label,
+.input-floating-group input:not(:placeholder-shown) ~ label,
+.input-floating-group.select-floating-group label {
+  top: 12px;
+  font-size: 0.625rem;
+  font-weight: 800;
+  color: #999999;
+}
+
+/* Special Select styling */
+.input-floating-group select {
+  cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* Checkbox Row */
+.form-checkbox-row {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.checkbox-container {
+  display: flex;
   align-items: center;
   gap: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #333333;
+  cursor: pointer;
+  user-select: none;
 }
 
-.btn-full:hover {
-  background-color: #d43d4a;
+.checkbox-container input {
+  display: none;
 }
 
-.btn-full:active {
-  transform: scale(0.98);
+.checkmark {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  position: relative;
+  transition: all 0.2s ease;
 }
 
-.btn-full:disabled {
-  background-color: rgba(255, 70, 85, 0.5);
+.checkbox-container:hover input ~ .checkmark {
+  border-color: #ff4655;
+}
+
+.checkbox-container input:checked ~ .checkmark {
+  background-color: #ff4655;
+  border-color: #ff4655;
+}
+
+.checkmark::after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.checkbox-container input:checked ~ .checkmark::after {
+  display: block;
+}
+
+/* Next Button - Red Circle */
+.login-action-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+.riot-next-btn {
+  width: 64px;
+  height: 64px;
+  background-color: #ff4655;
+  color: #ffffff;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(255, 70, 85, 0.3);
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.riot-next-btn:hover {
+  background-color: #d1364a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 70, 85, 0.4);
+}
+
+.riot-next-btn:active {
+  transform: translateY(0);
+}
+
+.riot-next-btn:disabled {
+  background-color: #ededed;
+  color: #cccccc;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
-.spinner-small {
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba(255,255,255,0.3);
+.arrow-icon {
+  width: 24px;
+  height: 24px;
+  transition: transform 0.2s ease;
+}
+
+.riot-next-btn:hover .arrow-icon {
+  transform: translateX(2px);
+}
+
+/* Loading Spin State */
+.riot-next-btn.loading .arrow-icon {
+  display: none;
+}
+
+.riot-next-btn.loading::after {
+  content: "";
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
   border-radius: 50%;
-  border-top-color: #fff;
-  animation: spin 1s linear infinite;
-  display: inline-block;
+  animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* Footer Links */
+.riot-footer-links {
+  display: flex;
+  justify-content: space-between;
+  margin-top: auto;
+  border-top: 1px solid #ededed;
+  padding-top: 20px;
+}
+
+.riot-footer-links a {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #999999;
+  letter-spacing: 0.5px;
+  transition: color 0.2s ease;
+}
+
+.riot-footer-links a:hover {
+  color: #111111;
 }
