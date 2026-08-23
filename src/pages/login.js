@@ -217,6 +217,11 @@ export function init() {
       return;
     }
 
+    if (pastedUrl.startsWith('http') && !pastedUrl.includes('access_token=')) {
+      showToast('❌ Copy Error: Aapne address bar se POORA URL copy nahi kiya. Hash (#access_token=...) part zaroori hai, chahe waha 404 page dikh raha ho!', 'error');
+      return;
+    }
+
     let accessToken = '';
     try {
       if (pastedUrl.includes('access_token=')) {
