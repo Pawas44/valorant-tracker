@@ -47,14 +47,12 @@ export default async function handler(req, res) {
     }
 
     // Extract cookies from header to forward them in the PUT request
-    const setCookieHeaders = initResponse.headers.getSetCookie();
+    const cookieHeader = initResponse.headers.get('set-cookie') || '';
     let asidCookie = '';
-    
-    setCookieHeaders.forEach(cookie => {
-      if (cookie.includes('asid=')) {
-        asidCookie = cookie.split(';')[0];
-      }
-    });
+    const cookieMatch = cookieHeader.match(/asid=([^;]+)/);
+    if (cookieMatch) {
+      asidCookie = `asid=${cookieMatch[1]}`;
+    }
 
     if (!asidCookie) {
       return res.status(500).json({ error: 'asid cookie not set by Riot auth server' });

@@ -49,13 +49,12 @@ export default defineConfig({
                 }
 
                 // Extract cookies
-                const setCookieHeaders = initRes.headers.getSetCookie();
+                const cookieHeader = initRes.headers.get('set-cookie') || '';
                 let asidCookie = '';
-                setCookieHeaders.forEach(cookie => {
-                  if (cookie.includes('asid=')) {
-                    asidCookie = cookie.split(';')[0];
-                  }
-                });
+                const cookieMatch = cookieHeader.match(/asid=([^;]+)/);
+                if (cookieMatch) {
+                  asidCookie = `asid=${cookieMatch[1]}`;
+                }
 
                 if (!asidCookie) {
                   res.statusCode = 500;
