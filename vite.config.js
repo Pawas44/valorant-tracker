@@ -160,6 +160,67 @@ export default defineConfig({
             return;
           }
 
+          // --- User Token Exchange Proxy Endpoint ---
+          if (req.url.startsWith('/api/user') && req.method === 'POST') {
+            let body = '';
+            req.on('data', chunk => { body += chunk; });
+            req.on('end', async () => {
+              try {
+                const { accessToken } = JSON.parse(body);
+                
+                // 1. Get Entitlements Token
+                const entitlementsResponse = await fetch('https://entitlements.auth.riotgames.com/api/token/v1', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`
+                  },
+                  body: JSON.stringify({})
+                });
+
+                if (!entitlementsResponse.ok) {
+                  res.statusCode = entitlementsResponse.status;
+                  res.setHeader('Content-Type', 'application/json');
+                  res.end(JSON.stringify({ error: 'Failed to fetch entitlements token' }));
+                  return;
+                }
+                const entitlementsData = await entitlementsResponse.json();
+                const entitlementsToken = entitlementsData.entitlements_token;
+
+                // 2. Fetch User Info
+                const userInfoResponse = await fetch('https://auth.riotgames.com/api/v1/userinfo', {
+                  method: 'POST',
+                  headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                  }
+                });
+
+                if (!userInfoResponse.ok) {
+                  res.statusCode = userInfoResponse.status;
+                  res.setHeader('Content-Type', 'application/json');
+                  res.end(JSON.stringify({ error: 'Failed to fetch user info' }));
+                  return;
+                }
+
+                const userData = await userInfoResponse.json();
+
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.end(JSON.stringify({
+                  entitlementsToken,
+                  puuid: userData.sub,
+                  gameName: userData.acct?.game_name || 'Riot Player',
+                  tagLine: userData.acct?.tag_line || 'NA'
+                }));
+              } catch (err) {
+                res.statusCode = 500;
+                res.setHeader('Content-Type', 'application/json');
+                res.end(JSON.stringify({ error: err.message }));
+              }
+            });
+            return;
+          }
+
           // --- Store Proxy Endpoint ---
           if (req.url.startsWith('/api/store') && req.method === 'POST') {
             let body = '';

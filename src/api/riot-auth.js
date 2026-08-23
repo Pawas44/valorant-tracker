@@ -242,3 +242,83 @@ export async function getRealStorefront(puuid, accessToken, entitlementsToken, r
     throw error;
   }
 }
+
+// ---- Exchange Access Token for Entitlements and User Info ----
+export async function authenticateWithToken(accessToken, region) {
+  if (!isCapacitor()) {
+    try {
+      const response = await fetch('/api/user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ accessToken })
+      });
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(errData.error || 'Failed to exchange token.');
+      }
+
+      const userData = await response.json();
+      return {
+        accessToken,
+        entitlementsToken: userData.entitlementsToken,
+        puuid: userData.puuid,
+        gameName: userData.gameName,
+        tagLine: userData.tagLine,
+        region
+      };
+    } catch (err) {
+      if (err.message.includes('Failed to fetch') || err.message === 'Load failed') {
+        throw new Error('BROWSER_CORS');
+      }
+      throw err;
+    }
+  }
+
+  try {
+    const { CapacitorHttp } = window.Capacitor.Plugins;
+
+    // 1. Get Entitlements Token
+    const entitlementsResponse = await CapacitorHttp.post({
+      url: 'https://entitlements.auth.riotgames.com/api/token/v1',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`
+      },
+      data: {}
+    });
+
+    if (entitlementsResponse.status !== 200) {
+      throw new Error('Failed to retrieve entitlements.');
+    }
+    const entitlementsToken = entitlementsResponse.data.entitlements_token;
+
+    // 2. Fetch User Info
+    const userInfoResponse = await CapacitorHttp.post({
+      url: 'https://auth.riotgames.com/api/v1/userinfo',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      },
+      data: {}
+    });
+
+    if (userInfoResponse.status !== 200) {
+      throw new Error('Failed to retrieve user details.');
+    }
+
+    const userData = userInfoResponse.data;
+    return {
+      accessToken,
+      entitlementsToken,
+      puuid: userData.sub,
+      gameName: userData.acct?.game_name || 'Riot Player',
+      tagLine: userData.acct?.tag_line || 'NA',
+      region
+    };
+  } catch (error) {
+    console.error('Riot Token Exchange Error:', error);
+    throw error;
+  }
+}

@@ -1,5 +1,5 @@
 import { getAccount } from '../api/henrik.js';
-import { authenticateWithRiot } from '../api/riot-auth.js';
+import { authenticateWithRiot, authenticateWithToken } from '../api/riot-auth.js';
 import { setState, showToast } from '../api/state.js';
 import { navigate } from '../router.js';
 import { showNavbar } from '../main.js';
@@ -108,6 +108,29 @@ export function render() {
             </button>
           </div>
         </form>
+
+        <!-- Official Web OAuth flow token paste panel (hidden by default) -->
+        <div id="riot-token-input-container" class="token-input-container" style="display: none;">
+          <p class="token-instruction">
+            Riot Sign-In has been opened in a new tab.
+            <br/><br/>
+            1. Log in there (using <strong>Google</strong>, Xbox, Apple, or credentials).
+            <br/>
+            2. After signing in, you will see a blank page. <strong>Copy the URL of that page</strong> from the address bar (starts with <code>playvalorant.com/opt_in#...</code>).
+            <br/>
+            3. Paste it below to complete sign-in:
+          </p>
+          <div class="input-floating-group">
+            <input type="text" id="riot-pasted-url" placeholder=" " />
+            <label for="riot-pasted-url">PASTE REDIRECT URL HERE</label>
+          </div>
+          <button type="button" id="token-login-btn" class="riot-red-btn-full" style="margin-top: 15px; font-weight: bold; text-transform: uppercase;">
+            COMPLETE SIGN IN
+          </button>
+          <button type="button" id="cancel-token-login" class="riot-cancel-btn" style="margin-top: 10px; width: 100%; border: none; background: transparent; color: #999999; font-size: 0.75rem; font-weight: 700; cursor: pointer; text-transform: uppercase;">
+            Back to standard login
+          </button>
+        </div>
         
         <div class="riot-footer-links">
           <a href="#" id="toggle-auth-mode">SIGN IN WITH PUBLIC RIOT ID</a>
@@ -135,8 +158,10 @@ export function render() {
 export function init() {
   const credentialsForm = document.getElementById('login-form-credentials');
   const riotidForm = document.getElementById('login-form-riotid');
+  const tokenContainer = document.getElementById('riot-token-input-container');
   const modeToggle = document.getElementById('toggle-auth-mode');
   const titleEl = document.querySelector('.riot-title');
+  const pasteUrlInput = document.getElementById('riot-pasted-url');
   
   let isRiotIdMode = false;
 
@@ -144,26 +169,127 @@ export function init() {
   modeToggle.addEventListener('click', (e) => {
     e.preventDefault();
     isRiotIdMode = !isRiotIdMode;
+    tokenContainer.style.display = 'none';
 
     if (isRiotIdMode) {
-      credentialsForm.classList.remove('active');
+      credentialsForm.style.display = 'none';
       riotidForm.classList.add('active');
       titleEl.textContent = 'Sign in with Riot ID';
       modeToggle.textContent = 'SIGN IN WITH RIOT ACCOUNT';
     } else {
       riotidForm.classList.remove('active');
+      credentialsForm.style.display = 'flex';
       credentialsForm.classList.add('active');
       titleEl.textContent = 'Sign in';
       modeToggle.textContent = 'SIGN IN WITH PUBLIC RIOT ID';
     }
   });
 
-  // Highlight social clicks
+  // Handle Social Clicks (Google, Apple, Xbox, etc.) - Opens Official Login portal
   const socialBtns = document.querySelectorAll('.social-btn');
   socialBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      showToast(`${btn.title} authentication is simulated. Please use username & password below.`, 'info');
+      showToast(`Opening official Riot Sign-In for ${btn.title}...`, 'info');
+      
+      const authUrl = 'https://auth.riotgames.com/authorize?client_id=play-valorant-web-prod&nonce=1&redirect_uri=https://playvalorant.com/opt_in&response_type=token%20id_token&scope=openid%20link%20ban%20lol_region';
+      
+      // Open in new window
+      window.open(authUrl, '_blank');
+      
+      // Hide standard forms and show the token input fields
+      credentialsForm.style.display = 'none';
+      riotidForm.classList.remove('active');
+      tokenContainer.style.display = 'flex';
+      titleEl.textContent = 'Link Account';
+      pasteUrlInput.focus();
     });
+  });
+
+  // Cancel Token Login Button
+  document.getElementById('cancel-token-login').addEventListener('click', () => {
+    tokenContainer.style.display = 'none';
+    credentialsForm.style.display = 'flex';
+    credentialsForm.classList.add('active');
+    titleEl.textContent = 'Sign in';
+  });
+
+  // Complete Token Login
+  const tokenLoginBtn = document.getElementById('token-login-btn');
+  tokenLoginBtn.addEventListener('click', async () => {
+    const pastedUrl = pasteUrlInput.value.trim();
+    if (!pastedUrl) {
+      showToast('Please paste the redirect URL first.', 'error');
+      return;
+    }
+
+    let accessToken = '';
+    try {
+      if (pastedUrl.includes('access_token=')) {
+        const hash = pastedUrl.includes('#') ? pastedUrl.split('#')[1] : pastedUrl;
+        const params = new URLSearchParams(hash);
+        accessToken = params.get('access_token');
+      } else {
+        accessToken = pastedUrl; // assume they pasted the raw token directly
+      }
+    } catch {
+      showToast('Invalid URL format. Please copy the entire blank page URL.', 'error');
+      return;
+    }
+
+    if (!accessToken) {
+      showToast('Could not find access token in the pasted URL.', 'error');
+      return;
+    }
+
+    tokenLoginBtn.disabled = true;
+    tokenLoginBtn.textContent = 'Syncing...';
+
+    try {
+      const region = document.getElementById('riot-region').value;
+      const authData = await authenticateWithToken(accessToken, region);
+      
+      let account;
+      try {
+        account = await getAccount(authData.gameName, authData.tagLine);
+      } catch {
+        account = {
+          name: authData.gameName,
+          tag: authData.tagLine,
+          puuid: authData.puuid,
+          account_level: 1,
+          card: {
+            wide: 'https://media.valorant-api.com/playercards/9fb34a2e-41de-4ee2-da79-b097b6ec7c61/wideart.png',
+            small: 'https://media.valorant-api.com/playercards/9fb34a2e-41de-4ee2-da79-b097b6ec7c61/smallart.png'
+          }
+        };
+      }
+
+      setState({
+        user: {
+          name: account.name,
+          tag: account.tag,
+          region: region,
+          puuid: authData.puuid,
+          accountLevel: account.account_level,
+          card: account.card,
+          accessToken: authData.accessToken,
+          entitlementsToken: authData.entitlementsToken,
+          authType: 'credentials',
+          isRealAuth: true
+        },
+        isLoggedIn: true,
+      });
+
+      showNavbar();
+      navigate('home');
+      showToast(`Logged in successfully! Welcome, ${account.name}`, 'success');
+    } catch (err) {
+      console.error(err);
+      showToast('Failed to sync account details. Please check the token.', 'error');
+    } finally {
+      tokenLoginBtn.disabled = false;
+      tokenLoginBtn.textContent = 'COMPLETE SIGN IN';
+    }
   });
 
   // Handle Tab 1 submit (Username & Password credentials)
